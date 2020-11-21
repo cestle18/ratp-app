@@ -1,3 +1,4 @@
+// thoose const are used to display data on the page
 const lineSelectElement = document.querySelector("#line-select");
 const stationSelectElement = document.querySelector("#station-select");
 const validateButton = document.querySelector("#go-button");
@@ -55,7 +56,7 @@ lineSelectElement.addEventListener("change", function (e) {
   fetchAndUpdateMetroLineStations(metroLineCode);
 });
 
-//étape 5
+//step 5
 // creating the query selector
 function fillStationsSelectOptions(metroLineStations) {
   stationSelectElement.innerHTML = "";
@@ -70,7 +71,8 @@ function fillStationsSelectOptions(metroLineStations) {
   });
 }
 
-//étape 6
+//step 6
+// at this step we fetch schedules of metro line station
 async function fetchMetroLineStationSchedules(metroLineCode, metroStationSlug) {
   let response = await fetch(
     "https://api-ratp.pierre-grimaud.fr/v4/schedules/metros/" +
@@ -96,6 +98,7 @@ async function fetchAndUpdateMetroLineStationSchedule(
   fillMetroLineStationSchedules(metroLineStationSchedules);
 }
 
+// i choosed to add a button to display schedules at click
 validateButton.addEventListener("click", function () {
   const metroLineCode = lineSelectElement.value;
   const metroStationSlug = stationSelectElement.value;
@@ -107,10 +110,17 @@ function fillMetroLineStationSchedules(metroLineStationSchedules) {
   metroLineStationSchedules.forEach(function (metroLineStationSchedule) {
     // schedules display
     schedulesContainer.innerHTML +=
-      "<p> Next metro in : " +
+      "<li> Next metro in : " +
       metroLineStationSchedule.message +
       " Destination : " +
       metroLineStationSchedule.destination +
-      "</p>";
+      "</li>";
   });
 }
+
+// this function will refresh the schedules every 30 secondes
+window.setInterval(function () {
+  const metroLineCode = lineSelectElement.value;
+  const metroStationSlug = stationSelectElement.value;
+  fetchAndUpdateMetroLineStationSchedule(metroLineCode, metroStationSlug);
+}, 30000);

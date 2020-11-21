@@ -1,19 +1,31 @@
 <html>
-  <head> </head>
+  <title>RATP App</title>
+  <meta charset="UTF-8" />
+  <head>
+    <style></style>
+  </head>
   <body>
-    <h1>Design pattern front - MTD || Caroline Boyer</h1>
-    <h2>Metro lines</h2>
+    <div id="all">
+      <h1>Design pattern front - MTD || Caroline Boyer</h1>
+      <h2>Metro lines</h2>
 
-    <label for="line-select">Choose a metro line :</label>
+      <div id="selection">
+        <div>
+          <label for="line-select">Choose a metro line :</label>
 
-    <select name="lines" id="line-select"></select>
+          <select name="lines" id="line-select"></select>
+        </div>
+        <div>
+          <label for="station-select">Choose a metro station :</label>
 
-    <select name="stations" id="station-select"></select>
-
-    <button name="goButton" id="go-button">Go!</button>
-
-    <div name="schedules" id="schedules"></div>
-
+          <select name="stations" id="station-select"></select>
+        </div>
+        <div>
+          <button name="goButton" id="go-button">Go!</button>
+        </div>
+        <ul name="schedules" id="schedules"></ul>
+      </div>
+    </div>
     <script src="js/ratpApp.js"></script>
   </body>
 </html>
