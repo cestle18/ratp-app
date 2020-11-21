@@ -1,5 +1,7 @@
 const lineSelectElement = document.querySelector("#line-select");
 const stationSelectElement = document.querySelector("#station-select");
+const validateButton = document.querySelector("#go-button");
+const schedulesContainer = document.querySelector("#schedules");
 
 //function that return metro lines
 async function fetchMetroLines() {
@@ -15,13 +17,10 @@ async function fetchMetroLines() {
 
 // creating the query selector
 function fillLinesSelectOptions(metroLines) {
-  console.log(lineSelectElement);
   lineSelectElement.innerHTML =
     '<option value="">--Please choose a metro line--</option>';
   metroLines.forEach(function (line) {
     // name and number display
-    console.log(line.code, line.name);
-    console.log("<option value='" + line.code + "'>" + line.name + "</option>");
     lineSelectElement.innerHTML +=
       "<option value='" + line.code + "'>" + line.name + "</option>";
   });
@@ -30,7 +29,6 @@ function fillLinesSelectOptions(metroLines) {
 // select
 async function main() {
   const metroLines = await fetchMetroLines();
-  console.log(metroLines);
   fillLinesSelectOptions(metroLines);
 }
 
@@ -49,7 +47,6 @@ async function fetchMetroLineStations(metroLineCode) {
 
 async function fetchAndUpdateMetroLineStations(metroLineCode) {
   const metroLineStations = await fetchMetroLineStations(metroLineCode);
-  console.log(metroLineStations);
   fillStationsSelectOptions(metroLineStations);
 }
 
@@ -64,19 +61,56 @@ function fillStationsSelectOptions(metroLineStations) {
   stationSelectElement.innerHTML = "";
   metroLineStations.forEach(function (metroLineStation) {
     // station name display
-    console.log(metroLineStation);
-    console.log(
-      "<option value='" +
-        metroLineStation.slug +
-        "'>" +
-        metroLineStation.name +
-        "</option>"
-    );
     stationSelectElement.innerHTML +=
       "<option value='" +
       metroLineStation.slug +
       "'>" +
       metroLineStation.name +
       "</option>";
+  });
+}
+
+//étape 6
+async function fetchMetroLineStationSchedules(metroLineCode, metroStationSlug) {
+  let response = await fetch(
+    "https://api-ratp.pierre-grimaud.fr/v4/schedules/metros/" +
+      metroLineCode +
+      "/" +
+      metroStationSlug +
+      "/A+R"
+  );
+  response = await response.json();
+  const metroLineStationSchedules = response.result.schedules;
+  console.log(metroLineStationSchedules);
+  return metroLineStationSchedules;
+}
+
+async function fetchAndUpdateMetroLineStationSchedule(
+  metroLineCode,
+  metroStationSlug
+) {
+  const metroLineStationSchedules = await fetchMetroLineStationSchedules(
+    metroLineCode,
+    metroStationSlug
+  );
+  fillMetroLineStationSchedules(metroLineStationSchedules);
+}
+
+validateButton.addEventListener("click", function () {
+  const metroLineCode = lineSelectElement.value;
+  const metroStationSlug = stationSelectElement.value;
+  fetchAndUpdateMetroLineStationSchedule(metroLineCode, metroStationSlug);
+});
+
+function fillMetroLineStationSchedules(metroLineStationSchedules) {
+  schedulesContainer.innerHTML = "";
+  metroLineStationSchedules.forEach(function (metroLineStationSchedule) {
+    // schedules display
+    schedulesContainer.innerHTML +=
+      "<p> Next metro in : " +
+      metroLineStationSchedule.message +
+      " Destination : " +
+      metroLineStationSchedule.destination +
+      "</p>";
   });
 }
